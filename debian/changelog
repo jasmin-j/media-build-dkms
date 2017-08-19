@@ -1,0 +1,5 @@
+media-build-dkms (0~trusty) trusty; urgency=medium
+
+  * initial build
+
+ -- Jasmin Jessich <jasmin@anw.at>  Sun, 23 Jul 2017 21:13:09 +0200
