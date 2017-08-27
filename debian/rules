@@ -6,7 +6,7 @@
 
 DEB_NAME=media-build
 NAME=media-build
-VERSION=0
+VERSION=0.2.0
 
 configure: configure-stamp
 configure-stamp:
