@@ -123,7 +123,12 @@ case "${distribution}" in
 			;;
 esac
 
-tar -xzf ${DKMS_TAR_FOUND}
+TAR_DIR="media-build-${DKMS_VERSION}"
+
+echo "Extracting TGZ to ${TAR_DIR}"
+rm -rf ${TAR_DIR}
+mkdir ${TAR_DIR}
+tar -xzf ${DKMS_TAR_FOUND} -C ${TAR_DIR}
 
 echo "Now build your package."
 
