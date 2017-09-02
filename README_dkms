@@ -14,45 +14,9 @@ README_dkms file there for the instructions.
 
 Once you have the "media-build-<PACKAGE_VERSION>.dkms_src.tgz" file, copy it
 to the root of this tree and execute
-   prepare_dkms_src.sh
+   ./prepare_dkms_src.sh <distribution> [variant] [--help]
 
 This script will extract the TGZ file and update all the local DKMS scripts
 in this tree for the new TGZ file version.
-After that use 
-
-
-
-
-PACKAGE_VERSION is read from dkms_ver.conf, so you need to edit this file
-prior to the tar file creation.
-
-The created tar file can be now used together with the above mentioned Debian
-DKMS tree or with a similar packager.
-
-
-
-    DKMS Branch naming in linux-media
-
-The mediatree/master-ddbridge branch is used as the integration branch for
-improvements and bugfixes. It is constantly rebased to mediatree/master and
-therefore the HASHes are rewritten.
-
-With this approach it is not possible to make valid TAGs. On the other hand
-keeping mediatree/master-ddbridge consistant is too much effort. So we need
-stable branches as snapshots.
-
-The snapshots branch names have to start with "dkms/" followed by a number
-which gets incremented with each new snapshot and finaly the date of the
-snapshot generation. The latter is required, because the commit dates are
-not suffcient to know when the snapshot has been taken.
-
-Examples:
-   dkms/0001-19_Aug_2017
-   dkms/0002-28_Aug_2017
-   dkms/0003-29_Aug_2017
-
-media-build uses the same branch naming. It may happen that media-build
-requires an update due to improofments. In that case the number from
-media-build might be higher than the one from linux-media. With the next
-change at linux-media this will be egalized.
+After that create the Debian or Ubuntu package as usual.
 

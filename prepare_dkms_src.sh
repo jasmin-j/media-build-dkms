@@ -44,7 +44,12 @@ function arg_check_help {
 # $1 .. template file name
 # $2 .. target path
 function copy_template {
-	echo "cp ${1} ${2}/"
+	target=${2}/$(basename ${1})
+	rm -f ${target}
+	sed -e "s&@DKMS_VERSION@&${DKMS_VERSION}&g" \
+		-e "s&@DKMS_VARIANT@&${DKMS_VARIANT}&g" \
+		-e "s&@DKMS_URGENCY@&${DKMS_URGENCY}&g" \
+		${1} > ${target}
 }
 
 # used for Debian and Ubuntu
@@ -105,7 +110,22 @@ fi
 echo "Preparing for ${DKMS_DIST} ${DKMS_VARIANT} (urgency=${DKMS_URGENCY})"
 echo "DKMS version ${DKMS_VERSION}"
 
-create_debian_dir
+case "${distribution}" in
+	Debian) create_debian_dir
+			for f in template_debian/* ; do
+				copy_template ${f} debian
+			done
+			;;
+	Ubuntu) create_debian_dir
+			for f in template_ubuntu/* ; do
+				copy_template ${f} debian
+			done
+			;;
+esac
+
+tar -xzf ${DKMS_TAR_FOUND}
+
+echo "Now build your package."
 
 exit 0
 

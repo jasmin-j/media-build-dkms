@@ -1,5 +1,0 @@
-linux-media DKMS module for Debian
-
-This package is a DKMS based version of the media-build system
-for distribution on Debian based operating systems.
-
