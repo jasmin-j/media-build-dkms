@@ -18,5 +18,6 @@ to the root of this tree and execute
 
 This script will extract the TGZ file and update all the local DKMS scripts
 in this tree for the new TGZ file version.
-After that create the Debian or Ubuntu package as usual.
+After that create the Debian or Ubuntu package with
+   make_deb
 

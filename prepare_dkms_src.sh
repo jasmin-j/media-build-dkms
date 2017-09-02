@@ -21,7 +21,7 @@ function err_exit {
 }
 
 function usage {
-	echo "Usage: $0 <distribution> [variant] [--help]"
+	echo "Usage: $0 <distribution> [variant] [--help] [--clean] [--distclean]"
 	echo " <distribution>: the distribution to generate the DKMS for"
 	echo "                 Currently supported:"
 	echo "                   Debian"
@@ -31,14 +31,41 @@ function usage {
 	echo "            Ubuntu: trusty, xenial, ..."
 	echo "                    Note: This string is used for the changelog file."
 	echo " Options:"
+	echo "   --clean: Remove all created directories"
+	echo "   --distclean: do --clean and also remove the TGZ file"
 	echo "   --help: This text"
 	exit_print "" 1
 }
 
-function arg_check_help {
+function opt_check_clean {
+	if [ "${1}" = "--clean" ] ; then
+		opt_clean=1
+	fi
+}
+
+function opt_check_dclean {
+	if [ "${1}" = "--distclean" ] ; then
+		opt_clean=1
+		opt_distclean=1
+	fi
+}
+
+function opt_check_help {
 	if [ "${1}" = "--help" ] ; then
 		usage
 	fi
+}
+
+function opt_check {
+	opt_check_clean "${1}"
+	opt_check_dclean "${1}"
+	opt_check_help "${1}"
+}
+
+function clean {
+	rm -rf debian
+    rm -rf ${1}
+    rm -f *-stamp
 }
 
 # $1 .. template file name
@@ -54,11 +81,14 @@ function copy_template {
 
 # used for Debian and Ubuntu
 function create_debian_dir {
-	rm -rf debian
 	mkdir debian
 	for f in template_common/* ; do
 		copy_template ${f} debian
 	done
+}
+
+function exec_debian_dir {
+	chmod a+x debian/postinst debian/prerm debian/rules
 }
 
 # main
@@ -67,17 +97,43 @@ if [ $# -lt 1 ] ; then
 	usage
 fi
 
-arg_check_help "${1}"
+opt_check "${1}"
 
 distribution="${1}"
 shift
 
-arg_check_help "${1}"
+opt_check "${1}"
 
 variant="${1}"
 shift
 
-arg_check_help "${1}"
+opt_check "${1}"
+
+for f in $(ls ${DKMS_TAR_NAME} 2> /dev/null ) __dummy__ ; do
+	[ "${f}" = "__dummy__" ] && break
+	[ -n "${DKMS_TAR_FOUND}" ] && err_exit "Found second TGZ file '${f}'!" 2
+	DKMS_TAR_FOUND=${f}
+done
+
+[ -z "${DKMS_TAR_FOUND}" ] && err_exit "No TGZ file found!" 3
+
+if [[ ${DKMS_TAR_FOUND} =~ ${DKMS_REGEX_VER} ]] ; then
+   DKMS_VERSION="${BASH_REMATCH[1]}"
+else
+   err_exit "Can't determine TGZ version!" 4
+fi
+
+TAR_DIR="media-build-${DKMS_VERSION}"
+
+clean ${TAR_DIR}
+
+if [ -n "${opt_distclean}" ] ; then
+    rm -rf ${DKMS_TAR_FOUND}
+fi
+
+if [ -n "${opt_clean}" ] ; then
+    exit 0
+fi
 
 case "${distribution}" in
 	Debian) variant="stable"; urgency="low";;
@@ -87,26 +143,11 @@ case "${distribution}" in
 	*) err_exit "Unsupported distribution '${distribution}'!" 2
 esac
 
-for f in $(ls ${DKMS_TAR_NAME} 2> /dev/null ) __dummy__ ; do
-	[ "${f}" = "__dummy__" ] && break
-	[ -n "${DKMS_TAR_FOUND}" ] && err_exit "Found second TGZ file '${f}'!" 2
-	DKMS_TAR_FOUND=${f}
-done
-
 DKMS_DIST="${distribution}"
 DKMS_VARIANT="${variant}"
 DKMS_URGENCY="${urgency}"
 
-[ -z "${DKMS_TAR_FOUND}" ] && err_exit "No TGZ file found!" 3
-
 echo "Found ${DKMS_TAR_FOUND}"
-
-if [[ ${DKMS_TAR_FOUND} =~ ${DKMS_REGEX_VER} ]] ; then
-   DKMS_VERSION="${BASH_REMATCH[1]}"
-else
-   err_exit "Can't determine TGZ version!" 4
-fi
-
 echo "Preparing for ${DKMS_DIST} ${DKMS_VARIANT} (urgency=${DKMS_URGENCY})"
 echo "DKMS version ${DKMS_VERSION}"
 
@@ -115,18 +156,17 @@ case "${distribution}" in
 			for f in template_debian/* ; do
 				copy_template ${f} debian
 			done
+			exec_debian_dir
 			;;
 	Ubuntu) create_debian_dir
 			for f in template_ubuntu/* ; do
 				copy_template ${f} debian
 			done
+			exec_debian_dir
 			;;
 esac
 
-TAR_DIR="media-build-${DKMS_VERSION}"
-
 echo "Extracting TGZ to ${TAR_DIR}"
-rm -rf ${TAR_DIR}
 mkdir ${TAR_DIR}
 tar -xzf ${DKMS_TAR_FOUND} -C ${TAR_DIR}
 
