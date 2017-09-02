@@ -1,0 +1,5 @@
+linux-media DKMS module for Ubuntu
+
+This package is a DKMS based version of the media-build system
+for distribution on Ubuntu based operating systems.
+

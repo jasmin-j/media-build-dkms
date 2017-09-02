@@ -1,7 +1,0 @@
-media-build-dkms (0.2.0) trusty; urgency=medium
-
-  * initial build
-    https://github.com/jasmin-j/media_build/tree/dkms_package/00_002_00-28_Aug_2017
-
-
- -- Jasmin Jessich <jasmin@anw.at>  Mon, 28 Aug 2017 01:10:07 +0200
