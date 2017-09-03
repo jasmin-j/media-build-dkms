@@ -1,6 +1,6 @@
 #!/bin/sh
 
-NAME=media_build
+NAME=media-build
 VERSION=@DKMS_VERSION@
 
 set -e
