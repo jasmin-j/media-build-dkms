@@ -28,7 +28,7 @@ function usage {
 	echo "                   Ubuntu"
 	echo " <variant>: distribution variant"
 	echo "            Debian: not used"
-	echo "            Ubuntu: trusty, xenial, ..."
+	echo "            Ubuntu: precise, trusty, xenial, ..."
 	echo "                    Note: This string is used for the changelog file."
 	echo " Options:"
 	echo "   --clean: Remove all created directories"
