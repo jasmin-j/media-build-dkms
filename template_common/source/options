@@ -1,0 +1,5 @@
+tar-ignore = ".git*"
+tar-ignore = "template_*"
+tar-ignore = "media-build-*dkms_src.tgz"
+tar-ignore = "prepare_dkms_src.sh"
+tar-ignore = "make_deb"

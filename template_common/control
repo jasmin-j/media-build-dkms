@@ -10,4 +10,4 @@ Architecture: all
 Depends: dkms (>= 1.95), ${misc:Depends}
 Conflicts: s2-liplianin-dkms, v4l-dvb-dkms, linux-tbs-drivers-dkms, linux-media-tbs-dkms, linux-media-dkms, media-build-experimental-dkms, dddvb-dkms
 Replaces: s2-liplianin-dkms, v4l-dvb-dkms, linux-tbs-drivers-dkms, linux-media-tbs-dkms, linux-media-dkms, media-build-experimental-dkms, dddvb-dkms
-Description: linux-media driver in DKMS format.
+Description: linux-media drivers in DKMS format.

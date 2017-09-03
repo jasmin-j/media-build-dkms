@@ -70,8 +70,8 @@ function clean {
 
 # $1 .. template file name
 # $2 .. target path
-function copy_template {
-	target=${2}/$(basename ${1})
+function copy_file {
+	target=${2}$(basename ${1})
 	rm -f ${target}
 	sed -e "s&@DKMS_VERSION@&${DKMS_VERSION}&g" \
 		-e "s&@DKMS_VARIANT@&${DKMS_VARIANT}&g" \
@@ -79,11 +79,27 @@ function copy_template {
 		${1} > ${target}
 }
 
+# $1 .. template file name
+# $2 .. template directory
+# $3 .. target directory
+function copy_template {
+	if [ -f ${1} ] ; then
+		src_dir="$(dirname ${1})"
+		dest_dir="${src_dir#${2}}/"
+		copy_file ${1} ${3}${dest_dir}
+	elif [ -d ${1} ] ; then
+		dest_dir="${1#${2}}"
+		mkdir -p ${3}${dest_dir}
+	else
+		err_exit "Unsupported file type '${1}'!" 4
+	fi
+}
+
 # used for Debian and Ubuntu
 function create_debian_dir {
 	mkdir debian
-	for f in template_common/* ; do
-		copy_template ${f} debian
+    for f in $(find template_common) ; do
+		copy_template ${f} template_common debian
 	done
 }
 
@@ -154,13 +170,13 @@ echo "DKMS version ${DKMS_VERSION}"
 case "${distribution}" in
 	Debian) create_debian_dir
 			for f in template_debian/* ; do
-				copy_template ${f} debian
+				copy_template ${f} template_debian debian
 			done
 			exec_debian_dir
 			;;
 	Ubuntu) create_debian_dir
 			for f in template_ubuntu/* ; do
-				copy_template ${f} debian
+				copy_template ${f} template_ubuntu debian
 			done
 			exec_debian_dir
 			;;
