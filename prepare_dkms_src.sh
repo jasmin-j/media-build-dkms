@@ -74,6 +74,7 @@ function copy_file {
 	target=${2}$(basename ${1})
 	rm -f ${target}
 	sed -e "s&@DKMS_VERSION@&${DKMS_VERSION}&g" \
+		-e "s&@DKMS_DIST_VERSION@&${DKMS_DIST_VERSION}&g" \
 		-e "s&@DKMS_VARIANT@&${DKMS_VARIANT}&g" \
 		-e "s&@DKMS_URGENCY@&${DKMS_URGENCY}&g" \
 		${1} > ${target}
@@ -151,10 +152,13 @@ if [ -n "${opt_clean}" ] ; then
     exit 0
 fi
 
+dist_version="${DKMS_VERSION}"
+
 case "${distribution}" in
 	Debian) variant="stable"; urgency="low";;
 	Ubuntu) [ -z "${variant}" ] && err_exit "No variant defined!"
 			urgency="medium"
+			dist_version="${DKMS_VERSION}~${variant}"
 			;;
 	*) err_exit "Unsupported distribution '${distribution}'!" 2
 esac
@@ -162,6 +166,7 @@ esac
 DKMS_DIST="${distribution}"
 DKMS_VARIANT="${variant}"
 DKMS_URGENCY="${urgency}"
+DKMS_DIST_VERSION="${dist_version}"
 
 echo "Found ${DKMS_TAR_FOUND}"
 echo "Preparing for ${DKMS_DIST} ${DKMS_VARIANT} (urgency=${DKMS_URGENCY})"
