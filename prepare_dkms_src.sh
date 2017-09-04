@@ -2,6 +2,7 @@
 
 DKMS_TAR_NAME="media-build-*.dkms_src.tgz"
 DKMS_REGEX_VER="media-build-(.*).dkms_src.tgz"
+DKMS_PRINF_VER="1.%i.0"
 
 DKMS_TAR_FOUND=
 
@@ -64,8 +65,8 @@ function opt_check {
 
 function clean {
 	rm -rf debian
-    rm -rf ${1}
-    rm -f *-stamp
+	rm -rf ${1}
+	rm -f *-stamp
 }
 
 # $1 .. template file name
@@ -99,7 +100,7 @@ function copy_template {
 # used for Debian and Ubuntu
 function create_debian_dir {
 	mkdir debian
-    for f in $(find template_common) ; do
+	for f in $(find template_common) ; do
 		copy_template ${f} template_common debian
 	done
 }
@@ -135,9 +136,9 @@ done
 [ -z "${DKMS_TAR_FOUND}" ] && err_exit "No TGZ file found!" 3
 
 if [[ ${DKMS_TAR_FOUND} =~ ${DKMS_REGEX_VER} ]] ; then
-   DKMS_VERSION="${BASH_REMATCH[1]}"
+	DKMS_VERSION="$(printf ${DKMS_PRINF_VER} ${BASH_REMATCH[1]})"
 else
-   err_exit "Can't determine TGZ version!" 4
+	err_exit "Can't determine TGZ version!" 4
 fi
 
 TAR_DIR="media-build-${DKMS_VERSION}"
@@ -145,11 +146,11 @@ TAR_DIR="media-build-${DKMS_VERSION}"
 clean ${TAR_DIR}
 
 if [ -n "${opt_distclean}" ] ; then
-    rm -rf ${DKMS_TAR_FOUND}
+	rm -rf ${DKMS_TAR_FOUND}
 fi
 
 if [ -n "${opt_clean}" ] ; then
-    exit 0
+	exit 0
 fi
 
 dist_version="${DKMS_VERSION}"
