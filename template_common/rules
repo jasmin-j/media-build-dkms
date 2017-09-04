@@ -25,8 +25,12 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp configure-stamp
-	-$(MAKE) clean
+	$(MAKE) clean
 	dh_clean
+
+build-arch: build
+
+build-indep:
 
 install: build
 	dh_testdir

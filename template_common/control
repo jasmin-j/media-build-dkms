@@ -3,7 +3,7 @@ Section: misc
 Priority: optional
 Maintainer: Jasmin Jessich <jasmin@anw.at>
 Build-Depends: debhelper (>= 7), dkms, libproc-processtable-perl
-Standards-Version: 3.8.1
+Standards-Version: 3.9.7
 
 Package: media-build-dkms
 Architecture: all
