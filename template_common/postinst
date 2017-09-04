@@ -8,8 +8,8 @@ set -e
 
 NAME=media-build
 PACKAGE_NAME=$NAME-dkms
-CVERSION=`dpkg-query -W -f='${Version}' $PACKAGE_NAME | awk -F "-" '{print $1}' | cut -d\: -f2`
-ARCH=`dpkg --print-architecture`
+CVERSION=$(dpkg-query -W -f='${Version}' $PACKAGE_NAME | awk -F "-" '{print $1}' | cut -d\: -f2 | cut -d~ -f1 | cut -d+ -f1)
+ARCH=$(dpkg --print-architecture)
 
 dkms_configure () {
 	for POSTINST in /usr/lib/dkms/common.postinst "/usr/share/$PACKAGE_NAME/postinst"; do

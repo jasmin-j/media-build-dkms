@@ -2,7 +2,10 @@
 
 DKMS_TAR_NAME="media-build-*.dkms_src.tgz"
 DKMS_REGEX_VER="media-build-(.*).dkms_src.tgz"
-DKMS_PRINF_VER="1.%i.0"
+
+# it is posible to use the single number version scheme!
+DKMS_PRINTF_VER="%s"
+#DKMS_PRINTF_VER="1.%i.0"
 
 DKMS_TAR_FOUND=
 
@@ -22,7 +25,7 @@ function err_exit {
 }
 
 function usage {
-	echo "Usage: $0 <distribution> [variant] [--help] [--clean] [--distclean]"
+	echo "Usage: $0 <distribution> [variant] [dist_version] [dist_epoche] [--help] [--clean] [--distclean]"
 	echo " <distribution>: the distribution to generate the DKMS for"
 	echo "                 Currently supported:"
 	echo "                   Debian"
@@ -30,7 +33,20 @@ function usage {
 	echo " <variant>: distribution variant"
 	echo "            Debian: not used"
 	echo "            Ubuntu: precise, trusty, xenial, ..."
-	echo "                    Note: This string is used for the changelog file."
+	echo "                    Note: This string is used for the changelog file and for the"
+	echo "                          package version."
+	echo " <dist_version>: distribution version"
+	echo "            Debian: not used"
+	echo "            Ubuntu: ~1, +1, ~1.0, ..."
+	echo "                    Note: This string is used as suffix for the package version to"
+	echo "                          number subsequent packages of the same upstream version."
+	echo "                          '-xxx' or ":xxx"is not allowed!"
+	echo " <dist_epoche>: distribution version epoche"
+	echo "            Debian: not used"
+	echo "            Ubuntu: 0, 1, 2, ..."
+	echo "                    Note: This string is used as prefix for the package version to"
+	echo "                          number packages when the upstream naming scheme has been"
+    echo "                          changed."
 	echo " Options:"
 	echo "   --clean: Remove all created directories"
 	echo "   --distclean: do --clean and also remove the TGZ file"
@@ -127,6 +143,16 @@ shift
 
 opt_check "${1}"
 
+dist_version="${1}"
+shift
+
+opt_check "${1}"
+
+dist_epoche="${1}"
+shift
+
+opt_check "${1}"
+
 for f in $(ls ${DKMS_TAR_NAME} 2> /dev/null ) __dummy__ ; do
 	[ "${f}" = "__dummy__" ] && break
 	[ -n "${DKMS_TAR_FOUND}" ] && err_exit "Found second TGZ file '${f}'!" 2
@@ -136,7 +162,7 @@ done
 [ -z "${DKMS_TAR_FOUND}" ] && err_exit "No TGZ file found!" 3
 
 if [[ ${DKMS_TAR_FOUND} =~ ${DKMS_REGEX_VER} ]] ; then
-	DKMS_VERSION="$(printf ${DKMS_PRINF_VER} ${BASH_REMATCH[1]})"
+	DKMS_VERSION="$(printf ${DKMS_PRINTF_VER} ${BASH_REMATCH[1]})"
 else
 	err_exit "Can't determine TGZ version!" 4
 fi
@@ -153,13 +179,15 @@ if [ -n "${opt_clean}" ] ; then
 	exit 0
 fi
 
-dist_version="${DKMS_VERSION}"
+distribution_version="${DKMS_VERSION}"
+
+[ -n "${dist_epoche}" ] && dist_epoche="${dist_epoche}:" 
 
 case "${distribution}" in
 	Debian) variant="stable"; urgency="low";;
 	Ubuntu) [ -z "${variant}" ] && err_exit "No variant defined!"
 			urgency="medium"
-			dist_version="${DKMS_VERSION}~${variant}"
+			distribution_version="${dist_epoche}${DKMS_VERSION}${dist_version}~${variant}"
 			;;
 	*) err_exit "Unsupported distribution '${distribution}'!" 2
 esac
@@ -167,7 +195,7 @@ esac
 DKMS_DIST="${distribution}"
 DKMS_VARIANT="${variant}"
 DKMS_URGENCY="${urgency}"
-DKMS_DIST_VERSION="${dist_version}"
+DKMS_DIST_VERSION="${distribution_version}"
 
 echo "Found ${DKMS_TAR_FOUND}"
 echo "Preparing for ${DKMS_DIST} ${DKMS_VARIANT} (urgency=${DKMS_URGENCY})"
