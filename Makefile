@@ -1,6 +1,7 @@
 #/usr/bin/make
 SRC = $(DESTDIR)/usr/src
 SHARE = $(DESTDIR)/usr/share/$(NAME)-dkms
+FORCE = $(DESTDIR)/usr/share/dkms/modules_to_force_install/$(NAME)
 
 all:
 
@@ -12,6 +13,12 @@ install:
 ifeq ("$(wildcard $(NAME)-$(VERSION))", "$(NAME)-$(VERSION)")
 	install -d "$(SRC)"
 	cp -a $(NAME)-$(VERSION) $(SRC)
+endif
+
+#module required forced installation
+ifeq ("$(wildcard force_module_install)", "force_module_install")
+	install -d "$(dir $(FORCE))"
+	install -m 644 force_module_install $(FORCE)
 endif
 
 #tarball, possibly with binaries
