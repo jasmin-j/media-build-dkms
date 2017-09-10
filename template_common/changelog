@@ -1,8 +1,18 @@
 media-build-dkms (@DKMS_DIST_VERSION@) @DKMS_VARIANT@; urgency=@DKMS_URGENCY@
 
+  * Used upstream packages:
+      https://github.com/jasmin-j/media_build/tree/dkms/0004-10_Sep_2017
+      https://github.com/jasmin-j/dddvb-linux-kernel/tree/dkms/0004-10_Sep_2017
+
+    Added support for forced module installation.
+
+ -- Jasmin Jessich <jasmin@anw.at>  Sun, 10 Sep 2017 14:10:32 +0200
+
+media-build-dkms (@DKMS_DIST_VERSION@) @DKMS_VARIANT@; urgency=@DKMS_URGENCY@
+
   * initial build
     Used upstream packages:
-      https://github.com/jasmin-j/media_build/tree/dkms/dkms/0003-08_Sep_2017
+      https://github.com/jasmin-j/media_build/tree/dkms/0003-08_Sep_2017
       https://github.com/jasmin-j/dddvb-linux-kernel/tree/dkms/0003-29_Aug_2017
 
  -- Jasmin Jessich <jasmin@anw.at>  Fri, 08 Sep 2017 00:13:05 +0200
