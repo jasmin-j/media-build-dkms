@@ -22,7 +22,7 @@ function do_prepare_Ubuntu {
    debuild -S || err_exit "Couldn't create source package for Ubuntu ${1}" 1
 
    if [ "${2}" = "binary" ]; then
-       debuild -i -us -uc || err_exit "Couldn't create binary package for Ubuntu ${1}" 2
+       fakeroot debian/rules binary || err_exit "Couldn't create binary package for Ubuntu ${1}" 2
    fi
 }
 
