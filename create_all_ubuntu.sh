@@ -31,4 +31,5 @@ function do_prepare_Ubuntu {
 do_prepare_Ubuntu precise
 do_prepare_Ubuntu trusty binary
 do_prepare_Ubuntu xenial
+do_prepare_Ubuntu bionic
 
