@@ -29,3 +29,6 @@ After that create the Debian or Ubuntu package with:
    # create the binary package (no signing)
    debuild -i -us -uc -b
 
+You can use script
+   ./create_all_ubuntu.sh
+to prepare the Launchpad upload files for all supported Ubuntu version at once.
