@@ -1,6 +1,14 @@
 media-build-dkms (@DKMS_DIST_VERSION@) @DKMS_VARIANT@; urgency=@DKMS_URGENCY@
 
   * Used upstream packages:
+      https://github.com/jasmin-j/media_build/tree/dkms/0006-14_Jul_2018
+      https://github.com/jasmin-j/dddvb-linux-kernel/tree/dkms/0006-14_Jul_2018
+
+ -- Jasmin Jessich <jasmin@anw.at>  Sat, 14 Jul 2018 19:02:46 +0200
+
+media-build-dkms (@DKMS_DIST_VERSION@) @DKMS_VARIANT@; urgency=@DKMS_URGENCY@
+
+  * Used upstream packages:
       https://github.com/jasmin-j/media_build/tree/dkms/0005-01_Jun_2018
       https://github.com/jasmin-j/dddvb-linux-kernel/tree/dkms/0005-01_Jun_2018
 
